@@ -105,10 +105,18 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		int respuesta = JOptionPane.showConfirmDialog(Main.this, "¿Estás Seguro?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION);
-		if (respuesta == JOptionPane.YES_OPTION)
-			System.exit(0);
-		
+		int respuesta = JOptionPane.showConfirmDialog(Main.this, "¿Desea guardar los cambios realizados y salir?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION);
+		if (respuesta == JOptionPane.YES_OPTION) {
+			System.exit(1);
+			contacts.save();
+		}
+		else {
+			int respuesta2 = JOptionPane.showConfirmDialog(Main.this, "¿Desea salir sin guardar?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION);
+			if (respuesta2 == JOptionPane.YES_OPTION) {
+				System.exit(0);
+				contacts.save();
+			}
+		}
 	}
 
 	@Override
@@ -137,7 +145,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -155,13 +162,13 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("LOAD")) {
-			
+			contacts.load(null);
 		}
 		else if(e.getActionCommand().equals("SAVE")) {
-			
+			contacts.save();
 		}
 		else if(e.getActionCommand().equals("SAVEAS")) {
-			
+			contacts.saveas(null);
 		}
 		else if(e.getActionCommand().equals("EXEC")) {
 			exec();
