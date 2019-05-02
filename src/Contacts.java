@@ -8,8 +8,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Contacts extends TreeMap<String, String> {
 	
-	File file;
-	JFileChooser jf = new JFileChooser();
 	
 	public String exec(String cmd) {
 		String result = null;
@@ -114,25 +112,10 @@ public class Contacts extends TreeMap<String, String> {
 	}
 	
 	public void load(File file) {
-		int selection = jf.showOpenDialog(null); 
-		if (selection == JFileChooser.APPROVE_OPTION) {
-			file = jf.getSelectedFile();
-		}
+		
 	}
 	
-	public void save() {
-		int ruta = jf.showSaveDialog(null);
-		if (file == null) {
-			if (ruta == JFileChooser.APPROVE_OPTION)
-				file = jf.getSelectedFile();
-		}
-		else {
-			if (ruta == JFileChooser.APPROVE_OPTION)
-				file = jf.getSelectedFile();
-		}		
-	}
-	
-	public void saveas(File file) {
-		save();
+	public void save(File file) {
+		
 	}
 }

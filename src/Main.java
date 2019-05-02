@@ -8,10 +8,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -27,14 +30,16 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 	private Contacts contacts = new Contacts();
 	private JTextField cmd;
 	private JTextArea textArea;
+	private JFileChooser jf = new JFileChooser();
 
-	public Main() {
+	public Main() throws IOException {
 		super("Prueba de Swing");
-//		setIconImage(ImageIO.read(getClass().getResource("/img/Flowe.png")));
+		setIconImage(ImageIO.read(getClass().getResource("/img/Flower.png")));
 		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setLayout(new BorderLayout());
 		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
 		
 		JButton load = new JButton(new ImageIcon(getClass().getResource("/img/Open file.png")));
 		load.setActionCommand("LOAD");
@@ -56,7 +61,6 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 		textArea = new JTextArea(30, 80);
 		textArea.setEditable(false);
 		textArea.setFocusable(false);
-//		textArea.setBackground((Color.BLACK));;
 		add(textArea, BorderLayout.CENTER);
 		
 		JPanel panel = new JPanel();
@@ -83,12 +87,18 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 			textArea.append(result + "\n");
 		}
 		cmd.setText("");
-		cmd.requestFocus();
+//		cmd.requestFocus();
 	}
 	
 	public static void main(String[] args) {
 		
-		SwingUtilities.invokeLater(() -> new Main().setVisible(true));
+		SwingUtilities.invokeLater(() -> {
+			try {
+				new Main().setVisible(true);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		});
 	}
 
 	@Override
@@ -105,17 +115,16 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 
 	@Override
 	public void windowClosing(WindowEvent arg0) {
-		int respuesta = JOptionPane.showConfirmDialog(Main.this, "¿Desea guardar los cambios realizados y salir?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION);
+		int respuesta = JOptionPane.showConfirmDialog(Main.this, "El documento ha sido modificado ¿Desea guardar antes de salir?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION, JOptionPane.NO_OPTION);
 		if (respuesta == JOptionPane.YES_OPTION) {
-			System.exit(1);
-			contacts.save();
+			System.exit(0);
+			save();
 		}
-		else {
-			int respuesta2 = JOptionPane.showConfirmDialog(Main.this, "¿Desea salir sin guardar?", "Cierre de la aplicación", JOptionPane.YES_NO_OPTION);
-			if (respuesta2 == JOptionPane.YES_OPTION) {
-				System.exit(0);
-				contacts.save();
-			}
+		else if (respuesta == JOptionPane.NO_OPTION) {
+			System.exit(0);
+		}
+		else if (respuesta == JOptionPane.CANCEL_OPTION) {
+			System.exit(1);
 		}
 	}
 
@@ -162,18 +171,30 @@ public class Main extends JFrame implements ActionListener, KeyListener, WindowL
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getActionCommand().equals("LOAD")) {
-			contacts.load(null);
+			load();
 		}
 		else if(e.getActionCommand().equals("SAVE")) {
-			contacts.save();
+			save();
 		}
 		else if(e.getActionCommand().equals("SAVEAS")) {
-			contacts.saveas(null);
+			saveAs();
 		}
 		else if(e.getActionCommand().equals("EXEC")) {
 			exec();
 		}
 		
 	}
-
+	
+	private void load() {
+		if (jf.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
+			contacts.load(jf.getSelectedFile());
+	}
+	
+	private void save() {
+		
+	}
+	
+	private void saveAs() {
+		
+	}
 }
